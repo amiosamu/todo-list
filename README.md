@@ -43,4 +43,4 @@
 
 ### Выполнение задачи <a name="complete-task"></a>
 
-### Получениe списка задач по статусу <a name="get-tasks-by-status"></a>
+### Получение списка задач по статусу <a name="get-tasks-by-status"></a>
