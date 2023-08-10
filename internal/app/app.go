@@ -26,7 +26,6 @@ import (
 // @description Тестовое задание на позицию Junior Go разработчика в компанию ТОО Region LLC.
 // @host localhost:8080
 // @BasePath /
-
 func Run(path string) {
 	cfg, err := config.NewConfig(path)
 	if err != nil {

@@ -96,14 +96,16 @@ func (r *taskRoutes) create(ctx *gin.Context) {
 // @Summary Update task
 // @Description Update task
 // @Tags tasks
+// @Accept json
 // @Produce json
+// @Param id path string true "Task ID"
 // @Param request body updateTaskRequest true "Task Request"
 // @Success 200 {object} updateTaskResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure 400 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /api/todo-list/tasks/{id}/done [put]
+// @Router /api/todo-list/tasks/{id} [put]
 func (r *taskRoutes) update(ctx *gin.Context) {
 	var task entity.UpdateTask
 	taskID := ctx.Param("id")
@@ -130,6 +132,7 @@ func (r *taskRoutes) update(ctx *gin.Context) {
 // @Summary Delete task
 // @Description Delete task
 // @Tags tasks
+// @Param id path string true "Task ID"
 // @Produce json
 // @Success 200 {object} statusResponse
 // @Failure 404 {object} errorResponse
@@ -156,6 +159,7 @@ func (r *taskRoutes) delete(ctx *gin.Context) {
 // @Summary Complete task
 // @Description Complete task
 // @Tags tasks
+// @Param id path string true "Task ID"
 // @Produce json
 // @Success 200 {object} statusResponse
 // @Failure 404 {object} errorResponse
@@ -185,12 +189,13 @@ func (r *taskRoutes) done(ctx *gin.Context) {
 // @Description Get Tasks By Status
 // @Tags tasks
 // @Produce json
+// @Param status query string false "Status filter (active/done)" Enums(active, done)
 // @Success 200 {object} statusResponse
 // @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure 409 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /api/todo-list/tasks/id/done [put]
+// @Router /api/todo-list/tasks [get]
 func (r *taskRoutes) getByStatus(ctx *gin.Context) {
 	status := ctx.DefaultQuery("status", "active")
 	tasks, err := r.taskService.GetTasksByStatus(ctx, status)
