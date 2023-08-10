@@ -2,12 +2,12 @@ package todo_list
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"github.com/amiosamu/todo-list/internal/entity"
 	"github.com/amiosamu/todo-list/internal/repo/repoerrors"
 	"github.com/amiosamu/todo-list/internal/service"
 	"github.com/gin-gonic/gin"
-	"fmt"
 )
 
 type taskRoutes struct {
@@ -34,6 +34,12 @@ type CreateTaskRequest struct {
 type CreateTaskResponse struct {
 	ID   string `json:"id"`
 	Code int    `json:"code"`
+}
+
+type UpdateTaskRequest struct{
+	Title string `json:"title"`
+	ActiveAt string `json:"activeAt"`
+	Status string `json:"status,omitempty"`
 }
 
 type UpdateTaskResponse struct {
@@ -77,7 +83,22 @@ func (r *taskRoutes) create(ctx *gin.Context) {
 }
 
 func (r *taskRoutes) update(ctx *gin.Context) {
+	var task entity.UpdateTask
+	taskID := ctx.Param("id")
+	if err := ctx.ShouldBindJSON(&task); err != nil{
+		ctx.JSON(http.StatusInternalServerError, statusResponse{"Internal Server Error"})
+		return
+	}
 
+	resp := entity.UpdateTask{
+		Title: task.Title,
+		ActiveAt: task.ActiveAt,
+	}
+	if err := r.taskService.UpdateTask(ctx, resp, taskID); err != nil{
+		ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not update the task"})
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
 }
 
 func (r *taskRoutes) delete(ctx *gin.Context) {
