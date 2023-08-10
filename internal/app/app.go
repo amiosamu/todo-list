@@ -16,8 +16,16 @@ import (
 	"github.com/amiosamu/todo-list/pkg/mongo"
 	"github.com/gin-gonic/gin"
 	mongo2 "go.mongodb.org/mongo-driver/mongo"
+	_ "github.com/amiosamu/todo-list/docs"
 	"golang.org/x/exp/slog"
 )
+
+
+// @title To-Do List API. 
+// @version 1.0
+// @description Тестовое задание на позицию Junior Go разработчика в компанию ТОО Region LLC.
+// @host localhost:8080
+// @BasePath /
 
 func Run(path string) {
 	cfg, err := config.NewConfig(path)
