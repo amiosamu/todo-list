@@ -2,17 +2,18 @@ package todo_list
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"github.com/amiosamu/todo-list/internal/entity"
 	"github.com/amiosamu/todo-list/internal/repo/repoerrors"
 	"github.com/amiosamu/todo-list/internal/service"
 	"github.com/gin-gonic/gin"
+	_ "github.com/amiosamu/todo-list/docs"
 )
 
 type taskRoutes struct {
 	taskService service.Task
 }
+
 
 func newTaskRoutes(c *gin.RouterGroup, taskService service.Task) {
 	r := &taskRoutes{
@@ -25,24 +26,24 @@ func newTaskRoutes(c *gin.RouterGroup, taskService service.Task) {
 	c.GET("/", r.getByStatus)
 }
 
-type CreateTaskRequest struct {
+type createTaskRequest struct {
 	Title    string `json:"title" binding:"required"`
 	ActiveAt string `json:"activeAt" binding:"required"`
 	Status   string `json:"status" binding:"required"`
 }
 
-type CreateTaskResponse struct {
+type createTaskResponse struct {
 	ID   string `json:"id"`
 	Code int    `json:"code"`
 }
 
-type UpdateTaskRequest struct{
+type updateTaskRequest struct{
 	Title string `json:"title"`
 	ActiveAt string `json:"activeAt"`
 	Status string `json:"status,omitempty"`
 }
 
-type UpdateTaskResponse struct {
+type updateTaskResponse struct {
 	Title    string `json:"title"`
 	ActiveAt string `json:"activeAt"`
 	Status   string `json:"status"`
@@ -54,9 +55,19 @@ type statusResponse struct {
 
 
 
-
+// @Summary Create task
+// @Description Create task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param request body createTaskRequest true "Task Request"
+// @Success 200 {object} createTaskResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/todo-list/tasks/ [post]
 func (r *taskRoutes) create(ctx *gin.Context) {
-	var request CreateTaskRequest
+	var request createTaskRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -68,25 +79,36 @@ func (r *taskRoutes) create(ctx *gin.Context) {
 	}
 	id, err := r.taskService.CreateTask(ctx.Request.Context(), *task)
 	if err != nil {
-		resp := CreateTaskResponse{
+		resp := createTaskResponse{
 			ID:   id,
 			Code: http.StatusInternalServerError,
 		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, resp)
 		return
 	}
-	resp := CreateTaskResponse{
+	resp := createTaskResponse{
 		ID:   id,
 		Code: http.StatusCreated,
 	}
 	ctx.JSON(http.StatusCreated, resp)
 }
 
+// @Summary Update task
+// @Description Update task
+// @Tags tasks
+// @Produce json
+// @Param request body updateTaskRequest true "Task Request"
+// @Success 200 {object} updateTaskResponse
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/todo-list/tasks/{id}/done [put]
 func (r *taskRoutes) update(ctx *gin.Context) {
 	var task entity.UpdateTask
 	taskID := ctx.Param("id")
 	if err := ctx.ShouldBindJSON(&task); err != nil{
-		ctx.JSON(http.StatusInternalServerError, statusResponse{"Internal Server Error"})
+		ctx.JSON(http.StatusBadRequest, statusResponse{"Bad Request"})
 		return
 	}
 
@@ -95,45 +117,83 @@ func (r *taskRoutes) update(ctx *gin.Context) {
 		ActiveAt: task.ActiveAt,
 	}
 	if err := r.taskService.UpdateTask(ctx, resp, taskID); err != nil{
-		ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not update the task"})
-		return
+		if errors.Is(err, repoerrors.TaskNotFound){
+			ctx.JSON(http.StatusNotFound, statusResponse{"Task not found"})
+			return
+		}else{
+			ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not update the task"})
+			return
+		}
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
-
+// @Summary Delete task
+// @Description Delete task
+// @Tags tasks
+// @Produce json
+// @Success 200 {object} statusResponse
+// @Failure 404 {object} errorResponse
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/todo-list/tasks/{id} [delete]
 func (r *taskRoutes) delete(ctx *gin.Context) {
 	taskID := ctx.Param("id")
 	if err := r.taskService.DeleteTask(ctx, taskID); err != nil {
-		ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not remove the task"})
-		return
+		if errors.Is(err, repoerrors.TaskNotFound){
+			ctx.JSON(http.StatusNotFound, statusResponse{"Task not found"})
+			return
+		} else {
+			ctx.JSON(http.StatusBadRequest, statusResponse{"Bad Request"})
+			return
+		}
 	}
 	ctx.JSON(http.StatusOK, statusResponse{
 		Status: "Successfully removed task",
 	})
 }
 
+
+// @Summary Complete task
+// @Description Complete task
+// @Tags tasks
+// @Produce json
+// @Success 200 {object} statusResponse
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure 409 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/todo-list/tasks/{id}/done [put]
 func (r *taskRoutes) done(ctx *gin.Context) {
     taskID := ctx.Param("id")
-
     err := r.taskService.TaskDone(ctx, taskID)
     if err !=  nil{
         if errors.Is(err, repoerrors.TaskAlreadyDone) {
             ctx.JSON(http.StatusConflict, gin.H{"error": "Task is already marked as done"})
-        } else {
+			return
+        } else if errors.Is(err, repoerrors.TaskNotFound){
+			ctx.JSON(http.StatusNotFound,gin.H{"error": "Task not found"})
+			return
+		} else {
             ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
         }
-        return
     }
-
     ctx.JSON(http.StatusOK, gin.H{"message": "Task marked as done"})
 }
 
-
+// @Summary Get Tasks By Status
+// @Description Get Tasks By Status
+// @Tags tasks
+// @Produce json
+// @Success 200 {object} statusResponse
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure 409 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /api/todo-list/tasks/id/done [put]
 func (r *taskRoutes) getByStatus(ctx *gin.Context) {
 	status := ctx.DefaultQuery("status", "active")
 	tasks, err := r.taskService.GetTasksByStatus(ctx, status)
-	fmt.Println(tasks)
-	fmt.Println(status)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return

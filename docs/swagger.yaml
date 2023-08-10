@@ -1,0 +1,176 @@
+basePath: /
+definitions:
+  internal_controller_http_todo-list.createTaskRequest:
+    properties:
+      activeAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    required:
+    - activeAt
+    - status
+    - title
+    type: object
+  internal_controller_http_todo-list.createTaskResponse:
+    properties:
+      code:
+        type: integer
+      id:
+        type: string
+    type: object
+  internal_controller_http_todo-list.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_controller_http_todo-list.statusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  internal_controller_http_todo-list.updateTaskRequest:
+    properties:
+      activeAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  internal_controller_http_todo-list.updateTaskResponse:
+    properties:
+      activeAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Тестовое задание на позицию Junior Go разработчика в компанию ТОО Region
+    LLC.
+  title: To-Do List API.
+  version: "1.0"
+paths:
+  /api/todo-list/tasks/:
+    post:
+      consumes:
+      - application/json
+      description: Create task
+      parameters:
+      - description: Task Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controller_http_todo-list.createTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.createTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+      summary: Create task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}:
+    delete:
+      description: Delete task
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+      summary: Delete task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}/done:
+    put:
+      description: Complete task
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+      summary: Complete task
+      tags:
+      - tasks
+  /api/todo-list/tasks/id/done:
+    put:
+      description: Get Tasks By Status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+      summary: Get Tasks By Status
+      tags:
+      - tasks
+swagger: "2.0"
