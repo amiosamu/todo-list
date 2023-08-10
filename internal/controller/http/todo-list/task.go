@@ -190,7 +190,7 @@ func (r *taskRoutes) done(ctx *gin.Context) {
 // @Failure 500 {object} errorResponse
 // @Failure 409 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /api/todo-list/tasks/id/done [put]
+// @Router /api/todo-list/tasks/{id}/done [get]
 func (r *taskRoutes) getByStatus(ctx *gin.Context) {
 	status := ctx.DefaultQuery("status", "active")
 	tasks, err := r.taskService.GetTasksByStatus(ctx, status)

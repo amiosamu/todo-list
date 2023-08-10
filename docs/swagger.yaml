@@ -116,6 +116,34 @@ paths:
       tags:
       - tasks
   /api/todo-list/tasks/{id}/done:
+    get:
+      description: Get Tasks By Status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
+      summary: Get Tasks By Status
+      tags:
+      - tasks
     put:
       description: Complete task
       produces:
@@ -142,35 +170,6 @@ paths:
           schema:
             $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
       summary: Complete task
-      tags:
-      - tasks
-  /api/todo-list/tasks/id/done:
-    put:
-      description: Get Tasks By Status
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/internal_controller_http_todo-list.statusResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
-        "409":
-          description: Conflict
-          schema:
-            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
-        default:
-          description: ""
-          schema:
-            $ref: '#/definitions/internal_controller_http_todo-list.errorResponse'
-      summary: Get Tasks By Status
       tags:
       - tasks
 swagger: "2.0"

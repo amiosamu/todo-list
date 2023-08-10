@@ -68,8 +68,46 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/todo-list/tasks/id/done": {
-            "put": {
+        "/api/todo-list/tasks/{id}": {
+            "delete": {
+                "description": "Delete task",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Delete task",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http_todo-list.statusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/todo-list/tasks/{id}/done": {
+            "get": {
                 "description": "Get Tasks By Status",
                 "produces": [
                     "application/json"
@@ -110,47 +148,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/api/todo-list/tasks/{id}": {
-            "delete": {
-                "description": "Delete task",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Delete task",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_controller_http_todo-list.statusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
-                        }
-                    },
-                    "default": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/internal_controller_http_todo-list.errorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/todo-list/tasks/{id}/done": {
+            },
             "put": {
                 "description": "Complete task",
                 "produces": [
