@@ -94,7 +94,6 @@ func (r *taskRoutes) delete(ctx *gin.Context) {
 func (r *taskRoutes) done(ctx *gin.Context) {
     taskID := ctx.Param("id")
 
-    // Call the TaskDone function from your repository
     err := r.taskService.TaskDone(ctx, taskID)
     if err !=  nil{
         if errors.Is(err, repoerrors.TaskAlreadyDone) {
