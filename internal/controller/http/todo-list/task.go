@@ -104,7 +104,7 @@ func (r *taskRoutes) update(ctx *gin.Context) {
 func (r *taskRoutes) delete(ctx *gin.Context) {
 	taskID := ctx.Param("id")
 	if err := r.taskService.DeleteTask(ctx, taskID); err != nil {
-		ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not delete the task"})
+		ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not remove the task"})
 		return
 	}
 	ctx.JSON(http.StatusOK, statusResponse{
