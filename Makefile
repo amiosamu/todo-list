@@ -25,7 +25,6 @@ cover:
 mockgen:
 	mockgen -source=internal/service/service.go -destination=internal/mocks/servicemocks/service.go -package=servicemocks
 	mockgen -source=internal/repo/repo.go       -destination=internal/mocks/repomocks/repo.go       -package=repomocks
-	mockgen -source=internal/webapi/webapi.go   -destination=internal/mocks/webapimocks/webapi.go   -package=webapimocks
 .PHONY: mockgen
 
 swag:
