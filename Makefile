@@ -13,7 +13,7 @@ compose-down:
 	docker-compose down --remove-orphans
 .PHONY: compose-down
 
-test: ### run test
+test:
 	go test -v ./...
 
 cover:
