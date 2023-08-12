@@ -15,7 +15,7 @@ type TaskService struct {
 func (t *TaskService) CreateTask(ctx context.Context, e entity.Task) (string, error) {
 	id, err := t.taskRepo.CreateTask(ctx, e)
 	if err != nil {
-		log.Fatalf("task service - CreateTask - %w", err)
+		log.Fatalf("task service - CreateTask - %v", err)
 		return "", err
 	}
 	return id, nil
@@ -23,7 +23,7 @@ func (t *TaskService) CreateTask(ctx context.Context, e entity.Task) (string, er
 
 func (t *TaskService) UpdateTask(ctx context.Context, e entity.UpdateTask, id string) error {
 	if err := t.taskRepo.UpdateTask(ctx, e, id); err != nil {
-		log.Fatalf("task service - UpdateTask - %w", e)
+		log.Fatalf("task service - UpdateTask - %v", e)
 	}
 	return nil
 }
