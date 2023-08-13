@@ -93,7 +93,7 @@ func (t *TaskRepo) TaskDone(ctx context.Context, id string) error {
 	if err != nil {
 		return err
 	}
-	if errors.Is(err, repoerrors.TaskNotFound){
+	if errors.Is(err, repoerrors.TaskNotFound) {
 		return repoerrors.TaskNotFound
 	}
 	if task.Status == "done" {
