@@ -9,7 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
+
+const dateLayout = "2006-01-02"
 
 type TaskRepo struct {
 	DB *mongo.Collection
@@ -114,12 +117,12 @@ func (t *TaskRepo) GetTasksByStatus(ctx context.Context, status string) ([]entit
 	if err != nil {
 		return nil, fmt.Errorf("task repository - GetTasksByStatus - Find - %w", err)
 	}
-	defer func(cursor *mongo.Cursor, ctx context.Context) {
+	defer func() {
 		err := cursor.Close(ctx)
 		if err != nil {
-			return
+			fmt.Printf("Error closing cursor: %v\n", err)
 		}
-	}(cursor, ctx)
+	}()
 
 	var tasks []entity.Task
 	for cursor.Next(ctx) {
@@ -127,6 +130,17 @@ func (t *TaskRepo) GetTasksByStatus(ctx context.Context, status string) ([]entit
 		if err := cursor.Decode(&task); err != nil {
 			return nil, fmt.Errorf("task repository - GetTasksByStatus - Decode - %w", err)
 		}
+
+		date, err := time.Parse(dateLayout, task.ActiveAt)
+		if err != nil {
+			return nil, fmt.Errorf("task repository - GetTasksByStatus - Parse - %w", err)
+		}
+		weekday := date.Weekday()
+		isWeekend := weekday == time.Saturday || weekday == time.Sunday
+		if isWeekend {
+			task.Title = "ВЫХОДНОЙ - " + task.Title
+		}
+
 		tasks = append(tasks, task)
 	}
 
