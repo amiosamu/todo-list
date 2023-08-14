@@ -159,7 +159,13 @@ curl -X GET http://localhost:8080/api/todo-list/tasks?status=active
     {
         "id": "64d46cb51afc77c3d0e32851",
         "title": "Купить машину",
-        "activeAt": "2023-08-10",
+        "activeAt": "2023-09-04",
+        "status": "active"
+    },
+    {
+        "id": "64da68b9932c443e11f89830",
+        "title": "ВЫХОДНОЙ - Купить чехол",
+        "activeAt": "2023-08-13",
         "status": "active"
     }
 ]
