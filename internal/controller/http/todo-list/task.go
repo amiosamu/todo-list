@@ -77,11 +77,12 @@ func (r *taskRoutes) create(ctx *gin.Context) {
 	}
 	id, err := r.taskService.CreateTask(ctx.Request.Context(), *task)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, statusResponse{"Could not create a task	"})
-		return
-	} else if errors.Is(err, repoerrors.TaskTitleTooLong) {
-		ctx.JSON(http.StatusNotFound, statusResponse{"Task not found"})
-		return
+		if errors.Is(err, repoerrors.TaskTitleTooLong) {
+			ctx.JSON(http.StatusBadRequest, statusResponse{"Task title too long"})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, statusResponse{"Could not create a task"})
+		}
 	}
 	resp := createTaskResponse{
 		ID:   id,
