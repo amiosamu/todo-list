@@ -36,7 +36,7 @@ type createTaskResponse struct {
 	Code int    `json:"code"`
 }
 
-type updateTaskRequest struct {
+type UpdateTaskRequest struct {
 	Title    string `json:"title"`
 	ActiveAt string `json:"activeAt"`
 	Status   string `json:"status,omitempty"`
