@@ -9,11 +9,11 @@ import (
 )
 
 type TaskService struct {
-	taskRepo repo.Task
+	TaskRepo repo.Task
 }
 
 func (t *TaskService) CreateTask(ctx context.Context, e entity.Task) (string, error) {
-	id, err := t.taskRepo.CreateTask(ctx, e)
+	id, err := t.TaskRepo.CreateTask(ctx, e)
 	if err != nil {
 		log.Fatalf("task service - CreateTask - %v", err)
 		return "", err
@@ -22,28 +22,28 @@ func (t *TaskService) CreateTask(ctx context.Context, e entity.Task) (string, er
 }
 
 func (t *TaskService) UpdateTask(ctx context.Context, e entity.UpdateTask, id string) error {
-	if err := t.taskRepo.UpdateTask(ctx, e, id); err != nil {
+	if err := t.TaskRepo.UpdateTask(ctx, e, id); err != nil {
 		log.Fatalf("task service - UpdateTask - %v", e)
 	}
 	return nil
 }
 
 func (t *TaskService) DeleteTask(ctx context.Context, id string) error {
-	return t.taskRepo.DeleteTask(ctx, id)
+	return t.TaskRepo.DeleteTask(ctx, id)
 }
 
 func (t *TaskService) TaskDone(ctx context.Context, id string) error {
-	return t.taskRepo.TaskDone(ctx, id)
+	return t.TaskRepo.TaskDone(ctx, id)
 }
 
 func (t *TaskService) GetTasksByStatus(ctx context.Context, status string) ([]entity.Task, error) {
-	return t.taskRepo.GetTasksByStatus(ctx, status)
+	return t.TaskRepo.GetTasksByStatus(ctx, status)
 }
 
 func NewTaskService(taskRepo repo.Task) *TaskService {
-	return &TaskService{taskRepo: taskRepo}
+	return &TaskService{TaskRepo: taskRepo}
 }
 
 func (t *TaskService) GetTaskByID(ctx context.Context, id string) (entity.UpdateTask, error) {
-	return t.taskRepo.GetTaskByID(ctx, id)
+	return t.TaskRepo.GetTaskByID(ctx, id)
 }

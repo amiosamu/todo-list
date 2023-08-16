@@ -37,7 +37,7 @@ func NewRouter(router *gin.Engine, services *service.Services) *gin.Engine {
 
 	todoList := router.Group("/api/todo-list")
 	{
-		newTaskRoutes(todoList.Group("/tasks"), services.Task)
+		NewTaskRoutes(todoList.Group("/tasks"), services.Task)
 	}
 
 	return router
