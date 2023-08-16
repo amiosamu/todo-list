@@ -9,7 +9,7 @@
 - mongo-driver/mongo (для хранилища данных)
 - docker и docker-compose (для запуска сервиса)
 - swagger (для API документации)
-- go-chi/chi (веб фреймворк)
+- gin-gonic/gin (веб фреймворк)
 - golang/mock, testify (для тестирования)
 
 ## Запуск
