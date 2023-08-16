@@ -42,10 +42,14 @@ func (t *TaskRepo) GetTaskByID(ctx context.Context, id string) (entity.UpdateTas
 }
 
 func (t *TaskRepo) CreateTask(ctx context.Context, task entity.Task) (string, error) {
+	if len(task.Title) > 200 {
+		return "", repoerrors.TaskTitleTooLong
+	}
 	res, err := t.DB.InsertOne(ctx, task)
 	if err != nil {
 		return "", fmt.Errorf("task repository - CreateTask - %w", err)
 	}
+
 	id := res.InsertedID.(primitive.ObjectID).Hex()
 	return id, nil
 }
