@@ -82,7 +82,6 @@ func TestTaskRoutes_delete(t *testing.T) {
 		r.ServeHTTP(recorder, req)
 
 		assert.Equal(t, http.StatusNotFound, recorder.Code)
-
 	})
 
 	t.Run("Successful task deletion", func(t *testing.T) {
@@ -94,6 +93,5 @@ func TestTaskRoutes_delete(t *testing.T) {
 		r.ServeHTTP(recorder, req)
 
 		assert.Equal(t, http.StatusOK, recorder.Code)
-
 	})
 }
