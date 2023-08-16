@@ -188,3 +188,41 @@ func TestTaskRoutes_update(t *testing.T) {
 		assert.Equal(t, http.StatusOK, recorder.Code)
 	})
 }
+
+func TestTaskRoutes_getByStatus(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockTaskService := service_mocks.NewMockTask(ctrl)
+	r := gin.Default()
+
+	todo_list.NewTaskRoutes(r.Group("/api/todo-list/tasks"), mockTaskService)
+
+	t.Run("Get active tasks", func(t *testing.T) {
+		status := "active"
+		mockTaskService.EXPECT().GetTasksByStatus(gomock.Any(), gomock.Eq(status)).Return([]entity.Task{
+			{Status: "active", Title: "Task 1"},
+			{Status: "done", Title: "Task 2"},
+		}, nil)
+
+		req, _ := http.NewRequest("GET", "/api/todo-list/tasks/?status="+status, nil)
+		recorder := httptest.NewRecorder()
+		r.ServeHTTP(recorder, req)
+
+		assert.Equal(t, http.StatusOK, recorder.Code)
+	})
+
+	t.Run("Get done tasks", func(t *testing.T) {
+		status := "done"
+		mockTaskService.EXPECT().GetTasksByStatus(gomock.Any(), gomock.Eq(status)).Return([]entity.Task{
+			{Status: "active", Title: "Task 1"},
+			{Status: "done", Title: "Task 2"},
+		}, nil)
+
+		req, _ := http.NewRequest("GET", "/api/todo-list/tasks/?status="+status, nil)
+		recorder := httptest.NewRecorder()
+		r.ServeHTTP(recorder, req)
+
+		assert.Equal(t, http.StatusOK, recorder.Code)
+	})
+}
