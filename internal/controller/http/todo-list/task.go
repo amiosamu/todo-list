@@ -52,13 +52,13 @@ type statusResponse struct {
 	Status string `json:"status"`
 }
 
-// @Summary Create task
-// @Description Create task
+// @Summary create task
+// @Description create task
 // @Tags tasks
 // @Accept json
 // @Produce json
 // @Param request body createTaskRequest true "Task Request"
-// @Success 200 {object} createTaskResponse
+// @Success 201 {object} createTaskResponse
 // @Failure 400 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
