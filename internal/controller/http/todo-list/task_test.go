@@ -64,3 +64,36 @@ func TestTaskRoutes_create(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, recorder.Code)
 	})
 }
+
+func TestTaskRoutes_delete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockTaskService := service_mocks.NewMockTask(ctrl)
+	r := gin.Default()
+	todo_list.NewTaskRoutes(r.Group("/api/todo-list/tasks"), mockTaskService)
+
+	t.Run("Task not found", func(t *testing.T) {
+		taskID := "invalid-id"
+		mockTaskService.EXPECT().DeleteTask(gomock.Any(), gomock.Eq(taskID)).Return(repoerrors.TaskNotFound)
+
+		req, _ := http.NewRequest("DELETE", "/api/todo-list/tasks/"+taskID, nil)
+		recorder := httptest.NewRecorder()
+		r.ServeHTTP(recorder, req)
+
+		assert.Equal(t, http.StatusNotFound, recorder.Code)
+
+	})
+
+	t.Run("Successful task deletion", func(t *testing.T) {
+		taskID := "64d74607f9c13a703bd73fcb"
+		mockTaskService.EXPECT().DeleteTask(gomock.Any(), gomock.Eq(taskID)).Return(nil)
+
+		req, _ := http.NewRequest("DELETE", "/api/todo-list/tasks/"+taskID, nil)
+		recorder := httptest.NewRecorder()
+		r.ServeHTTP(recorder, req)
+
+		assert.Equal(t, http.StatusOK, recorder.Code)
+
+	})
+}
